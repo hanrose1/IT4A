@@ -59,6 +59,7 @@ def employeeView(request):
         print(employees, serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    #Ga create ug employee
     if(request.method == 'POST'):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
@@ -68,23 +69,35 @@ def employeeView(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET', 'PUT', 'DELETE'])
+#emp_id(parameter->urls.py)
 def employee(request, emp_id):
+    #Try Fetching Employee object according to its requested id(Employee obj kay naa sa employee model???)
     try:
         employee = Employee.objects.get(pk=emp_id)
+        #If no employee exist it return a response 404
     except Employee.DoesNotExist:
         return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
-
+    #If employee exist, request method to get the employee
     if request.method == 'GET':
+        #Since employee is an object, serializer converts the data into JSON
         serializer = EmployeeSerializer(employee)
+        #Then it returns converted employeed data with a status 200 OK
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    #Else if mag update, request method/trigger an action PUT
     elif request.method == 'PUT':
+        #Then kaning request.data is from client. Since si client nagupdate. Iagi ug serializer.
         serializer = EmployeeSerializer(employee, data=request.data)
+        #I-check dayun kung ang serializer in which is ang sulod kay employee object, ug ang request data ni client is valid. 
         if serializer.is_valid():
+            #Kung valid -> gi save
             serializer.save()
+            #Mu return dayon sya ug updated employee with status nga 200 OK
             return Response(serializer.data, status=status.HTTP_200_OK)
+        #kung dile VALID -> mu return ug badrequest and error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    #Else if kung idelete nimo, request sya ug method delete
     elif request.method == 'DELETE':
+        #then kaning si employee, makita nato sa try: employee with emp_id. Specific employee na ni. Delete.
         employee.delete()
+        #Then return dayon sya ug 204 no content kay wa namay content
         return Response(status=status.HTTP_204_NO_CONTENT)
