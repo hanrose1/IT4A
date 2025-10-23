@@ -3,6 +3,7 @@ from api.views import employee_function_base_view
 from api.views import student_function_base_view
 from  api.views import student_class_base_view
 from  api.views import employee_class_base_view
+from api.views import mixins_employee
 
 urlpatterns = [
     path('fbv-students/', student_function_base_view.studentView),
@@ -13,5 +14,9 @@ urlpatterns = [
     path('cbv-students/', student_class_base_view.StudentView.as_view()),
     path('cbv-students/<int:pk>/', student_class_base_view.StudentDetail.as_view()),
     path('cbv-employees/', employee_class_base_view.EmployeeView.as_view()),
-    path('cbv-employees/<int:pk>/', employee_class_base_view.EmployeeDetail.as_view())
+    path('cbv-employees/<int:pk>/', employee_class_base_view.EmployeeDetail.as_view()),
+
+#as view convert cclass to function
+    path('mixins-employees/', mixins_employee.Employees.as_view()),
+    path('mixins-employees/<int:pk>/', mixins_employee.EmployeeDetail.as_view())
 ]
